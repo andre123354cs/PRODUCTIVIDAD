@@ -40,7 +40,7 @@ Pagos_Cruzados = {
 
 # Diccionario de metas
 Metas = {
-    "Comfama": 100000000,
+    "Comfama": 220000000,
     "Azzorti": 100000000,
     "Cueros": 100000000,
     "Keypago": 100000000,
