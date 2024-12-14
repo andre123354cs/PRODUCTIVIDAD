@@ -44,7 +44,7 @@ Metas = {
     "Comfama": 100000000,
     "Azzorti": 100000000,
     "Cueros": 100000000,
-    "Keypago": 100000000,
+    "keypagos": 100000000,
     "Linea Directa": 100000000,
     "Nova Mexico": 100000000,
     "Nova Colombia": 100000000,
