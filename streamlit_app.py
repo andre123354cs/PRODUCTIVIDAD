@@ -50,6 +50,22 @@ Metas = {
     "Nova Colombia": 100000000,
 }
 
+# Diccionario de nombres de meses en español
+meses_espanol = {
+    1.0: "Enero",
+    2.0: "Febrero",
+    3.0: "Marzo",
+    4.0: "Abril",
+    5.0: "Mayo",
+    6.0: "Junio",
+    7.0: "Julio",
+    8.0: "Agosto",
+    9.0: "Septiembre",
+    10.0: "Octubre",
+    11.0: "Noviembre",
+    12.0: "Diciembre"
+}
+
 # Filtro para seleccionar la cartera
 cartera_seleccionada = st.selectbox('Selecciona la cartera', list(Pagos_Cruzados.keys()))
 
@@ -63,10 +79,13 @@ if cartera_seleccionada:
         df_filtrado = df[df['Cartera_Pagos'] == cartera_seleccionada]
         
         # Mostrar la tabla de datos filtrados
-        
+        st.dataframe(df_filtrado)
+
         # Filtro para seleccionar los meses a comparar
         meses = df_filtrado['Mes_Creacion'].unique()
-        meses_seleccionados = st.multiselect('Selecciona uno o más meses', meses, default=meses[:2])
+        meses_nombres = [meses_espanol[mes] for mes in meses]
+        meses_seleccionados = st.multiselect('Selecciona uno o más meses', meses_nombres, default=meses_nombres[:2])
+        meses_seleccionados_num = [key for key, value in meses_espanol.items() if value in meses_seleccionados]
         
         # Crear columna acumulada de pagos por día en cada mes
         df_filtrado['Acumulado_Pagos'] = df_filtrado.groupby(['Mes_Creacion'])['Pagos'].cumsum()
@@ -75,9 +94,9 @@ if cartera_seleccionada:
         fig = go.Figure()
         
         # Agregar líneas para los meses seleccionados
-        for mes in meses_seleccionados:
+        for mes in meses_seleccionados_num:
             df_mes = df_filtrado[df_filtrado['Mes_Creacion'] == mes]
-            fig.add_trace(go.Scatter(x=df_mes['Dia'], y=df_mes['Acumulado_Pagos'], mode='lines+markers', name=f'Acumulado {mes}'))
+            fig.add_trace(go.Scatter(x=df_mes['Dia'], y=df_mes['Acumulado_Pagos'], mode='lines+markers', name=f'Acumulado {meses_espanol[mes]}'))
             # Mostrar la última etiqueta de cada línea
             fig.add_annotation(x=df_mes['Dia'].iloc[-1], y=df_mes['Acumulado_Pagos'].iloc[-1],
                                text=f"{df_mes['Acumulado_Pagos'].iloc[-1]:,.2f}", showarrow=True, arrowhead=2)
