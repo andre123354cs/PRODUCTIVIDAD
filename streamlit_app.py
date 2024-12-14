@@ -43,7 +43,7 @@ Pagos_Cruzados = {
 Metas = {
     "Comfama": 100000000,
     "Azzorti": 100000000,
-    "Cueros": 100000000,
+    "Cueros": 40000000,
     "keypagos": 100000000,
     "Linea Directa": 49000000,
     "Nova Mexico": 100000000,
