@@ -40,7 +40,7 @@ Pagos_Cruzados = {
 
 # Diccionario de metas
 Metas = {
-    "Comfama": 220000000,
+    "Comfama": 100000000,
     "Azzorti": 100000000,
     "Cueros": 100000000,
     "Keypago": 100000000,
@@ -52,7 +52,6 @@ Metas = {
 # Filtro para seleccionar la cartera
 cartera_seleccionada = st.selectbox('Selecciona la cartera', list(Pagos_Cruzados.keys()))
 
-# Mostrar la tabla correspondiente a la cartera seleccionada y crear acumulado de pagos
 if cartera_seleccionada:
     url = Pagos_Cruzados[cartera_seleccionada]
     try:
@@ -61,15 +60,15 @@ if cartera_seleccionada:
         # Filtrar los datos por Cartera_x
         df_filtrado = df[df['Cartera_x'] == cartera_seleccionada]
         
-        # Ordenar los datos por Mes_Creacion y Dia
-        df_filtrado = df_filtrado.sort_values(by=['Mes_Creacion', 'Dia'])
-        
-        # Crear columna acumulada de pagos por día en cada mes
-        df_filtrado['Acumulado_Pagos'] = df_filtrado.groupby(['Mes_Creacion'])['Pagos'].cumsum()
+        # Mostrar la tabla de datos filtrados
+        st.dataframe(df_filtrado)
         
         # Filtro para seleccionar los meses a comparar
         meses = df_filtrado['Mes_Creacion'].unique()
         meses_seleccionados = st.multiselect('Selecciona uno o más meses', meses, default=meses[:2])
+        
+        # Crear columna acumulada de pagos por día en cada mes
+        df_filtrado['Acumulado_Pagos'] = df_filtrado.groupby(['Mes_Creacion'])['Pagos'].cumsum()
         
         # Crear la gráfica
         fig = go.Figure()
