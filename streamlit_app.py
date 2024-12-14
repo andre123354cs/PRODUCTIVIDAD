@@ -56,6 +56,31 @@ if cartera_seleccionada:
         # Crear columna acumulada de pagos por día en cada mes
         df_filtrado['Acumulado_Pagos'] = df_filtrado.groupby(['Mes_Creacion'])['Pagos'].cumsum()
         
-        st.dataframe(df_filtrado)
+        # Filtro para seleccionar el mes
+        meses = df_filtrado['Mes_Creacion'].unique()
+        mes_seleccionado = st.selectbox('Selecciona el mes', meses)
+        
+        # Filtrar los datos según el mes seleccionado
+        df_mes = df_filtrado[df_filtrado['Mes_Creacion'] == mes_seleccionado]
+        
+        # Crear la gráfica
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=df_mes['Dia'], y=df_mes['Acumulado_Pagos'], mode='lines+markers', name='Acumulado Pagos'))
+        
+        # Añadir título y etiquetas
+        fig.update_layout(
+            title=f'Acumulado de Pagos para el Mes {mes_seleccionado}',
+            xaxis_title='Día',
+            yaxis_title='Acumulado de Pagos',
+            hovermode='x unified'
+        )
+        
+        # Mostrar la gráfica en Streamlit
+        st.plotly_chart(fig)
+        
+        # Mostrar el valor máximo del acumulado de pagos
+        max_acumulado = df_mes['Acumulado_Pagos'].max()
+        st.metric(label="Máximo Acumulado de Pagos", value=f"${max_acumulado:,.2f}")
+        
     except Exception as e:
         st.error(f"Error al cargar el archivo: {e}")
