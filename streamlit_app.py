@@ -100,15 +100,14 @@ if cartera_seleccionada:
         meses_nombres = [meses_espanol[mes] for mes in meses]
         
         seleccion_meses = []
-        rows = [st.columns(6) for _ in range(2)]
-        mes_seleccionado = {mes: False for mes in meses_nombres}
+        selected = {mes: False for mes in meses_nombres}
 
+        cols = st.columns(6)
         for i, mes in enumerate(meses_nombres):
-            if rows[i // 6][i % 6].pill(mes, mes_seleccionado[mes]):
-                mes_seleccionado[mes] = not mes_seleccionado[mes]
-                if mes_seleccionado[mes]:
-                    seleccion_meses.append(mes)
-
+            selected[mes] = cols[i % 6].checkbox(mes, selected[mes])
+            if selected[mes]:
+                seleccion_meses.append(mes)
+        
         meses_seleccionados_num = [key for key, value in meses_espanol.items() if value in seleccion_meses]
 
         if len(meses_seleccionados_num) > 0:
