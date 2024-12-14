@@ -47,7 +47,7 @@ Metas = {
     "keypagos": 100000000,
     "Linea_Directa": 15000000,
     "Nova_Mexico": 1000000,
-    "Nova Colombia": 20000000000,
+    "Nova Colombia": 100000000,
 }
 
 # Diccionario de nombres de meses en español
@@ -78,9 +78,6 @@ if cartera_seleccionada:
         # Filtrar los datos por Cartera_x
         df_filtrado = df[df['Cartera_Pagos'] == cartera_seleccionada]
         
-        # Mostrar la tabla de datos filtrados
-        st.dataframe(df_filtrado)
-
         # Filtro para seleccionar los meses a comparar
         meses = df_filtrado['Mes_Creacion'].unique()
         meses_nombres = [meses_espanol[mes] for mes in meses]
@@ -90,7 +87,7 @@ if cartera_seleccionada:
         # Crear columna acumulada de pagos por día en cada mes
         df_filtrado['Acumulado_Pagos'] = df_filtrado.groupby(['Mes_Creacion'])['Pagos'].cumsum()
         
-        # Crear la gráfica
+        # Crear la gráfica de comparación de acumulado de pagos
         fig = go.Figure()
         
         # Agregar líneas para los meses seleccionados
@@ -120,9 +117,19 @@ if cartera_seleccionada:
         # Mostrar la gráfica en Streamlit
         st.plotly_chart(fig)
         
+        # Crear la segunda gráfica con el valor máximo del acumulado por mes
+        df_max_acumulado = df_filtrado.groupby('Mes_Creacion')['Acumulado_Pagos'].max().reset_index()
+        df_max_acumulado['Mes'] = df_max_acumulado['Mes_Creacion'].map(meses_espanol)
+        
+        fig2 = px.bar(df_max_acumulado, x='Mes', y='Acumulado_Pagos', title='Valor Máximo del Acumulado de Pagos por Mes')
+        
+        # Mostrar la segunda gráfica en Streamlit
+        st.plotly_chart(fig2)
+        
         # Mostrar el valor máximo del acumulado de pagos
         max_acumulado = df_filtrado['Acumulado_Pagos'].max()
         st.metric(label="Máximo Acumulado de Pagos", value=f"${max_acumulado:,.2f}")
         
     except Exception as e:
         st.error(f"Error al cargar el archivo: {e}")
+
