@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 import numpy as np
 import pyrebase
 
+
 st.set_page_config(
     page_title="MetaData",
     page_icon=":chart_with_upwards_trend:",
