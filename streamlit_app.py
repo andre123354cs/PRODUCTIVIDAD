@@ -53,11 +53,14 @@ Metas = {
 # Filtro para seleccionar la cartera
 cartera_seleccionada = st.selectbox('Selecciona la cartera', list(Pagos_Cruzados.keys()))
 
+
 if cartera_seleccionada:
     url = Pagos_Cruzados[cartera_seleccionada]
     try:
         df = pd.read_parquet(url)
-        
+
+        st.dataframe(df)
+
         # Filtrar los datos por Cartera_x
         df_filtrado = df[df['Cartera_Pagos'] == cartera_seleccionada]
         
