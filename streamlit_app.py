@@ -66,9 +66,19 @@ meses_espanol = {
     12.0: "Diciembre"
 }
 
+# Función para formatear los valores del recaudo
+def formatear_valor(valor):
+    if valor >= 1e9:
+        return f"{valor / 1e9:.2f} mil millones"
+    elif valor >= 1e6:
+        return f"{valor / 1e6:.2f} millones"
+    elif valor >= 1e3:
+        return f"{valor / 1e3:.2f} mil"
+    else:
+        return str(valor)
+
 # Filtro para seleccionar la cartera
 cartera_seleccionada = st.selectbox('Selecciona la cartera', list(Pagos_Cruzados.keys()))
-
 
 if cartera_seleccionada:
     url = Pagos_Cruzados[cartera_seleccionada]
@@ -96,7 +106,7 @@ if cartera_seleccionada:
             fig.add_trace(go.Scatter(x=df_mes['Dia'], y=df_mes['Acumulado_Pagos'], mode='lines+markers', name=f'Acumulado {meses_espanol[mes]}'))
             # Mostrar la última etiqueta de cada línea
             fig.add_annotation(x=df_mes['Dia'].iloc[-1], y=df_mes['Acumulado_Pagos'].iloc[-1],
-                               text=f"{df_mes['Acumulado_Pagos'].iloc[-1]:,.2f}", showarrow=True, arrowhead=2)
+                               text=formatear_valor(df_mes['Acumulado_Pagos'].iloc[-1]), showarrow=True, arrowhead=2)
         
         # Añadir línea discontinua para la meta acumulada diaria hasta 30 días
         meta = Metas[cartera_seleccionada]
@@ -124,8 +134,11 @@ if cartera_seleccionada:
         fig2 = px.bar(df_max_acumulado, x='Mes', y='Acumulado_Pagos', title='Valor Máximo del Acumulado de Pagos por Mes', text='Acumulado_Pagos')
         
         # Añadir etiquetas a las barras con el valor del máximo
-        fig2.update_traces(texttemplate='%{text:.2s}', textposition='outside')
+        fig2.update_traces(texttemplate='%{text}', textposition='outside')
         
+        # Formatear las etiquetas de las barras
+        fig2.for_each_trace(lambda trace: trace.update(text=[formatear_valor(val) for val in trace.y]))
+
         # Mostrar la segunda gráfica en Streamlit
         st.plotly_chart(fig2)
 
