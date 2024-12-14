@@ -80,10 +80,14 @@ def formatear_valor(valor):
 # Filtro para seleccionar la cartera
 cartera_seleccionada = st.selectbox('Selecciona la cartera', list(Pagos_Cruzados.keys()))
 
+@st.cache_data
+def cargar_datos(url):
+    return pd.read_parquet(url)
+
 if cartera_seleccionada:
     url = Pagos_Cruzados[cartera_seleccionada]
     try:
-        df = pd.read_parquet(url)
+        df = cargar_datos(url)
 
         # Filtrar los datos por Cartera_x
         df_filtrado = df[df['Cartera_Pagos'] == cartera_seleccionada]
@@ -131,14 +135,22 @@ if cartera_seleccionada:
         df_max_acumulado = df_filtrado.groupby('Mes_Creacion')['Acumulado_Pagos'].max().reset_index()
         df_max_acumulado['Mes'] = df_max_acumulado['Mes_Creacion'].map(meses_espanol)
         
-        fig2 = px.bar(df_max_acumulado, x='Mes', y='Acumulado_Pagos', title='Valor Máximo del Acumulado de Pagos por Mes', text='Acumulado_Pagos')
+        colores = df_max_acumulado['Acumulado_Pagos'].apply(lambda x: 'red' if x == df_max_acumulado['Acumulado_Pagos'].min() else ('green' if x == df_max_acumulado['Acumulado_Pagos'].max() else 'yellow'))
         
-        # Añadir etiquetas a las barras con el valor del máximo
-        fig2.update_traces(texttemplate='%{text}', textposition='outside')
+        fig2 = go.Figure(data=[go.Bar(
+            x=df_max_acumulado['Mes'], 
+            y=df_max_acumulado['Acumulado_Pagos'],
+            text=[formatear_valor(val) for val in df_max_acumulado['Acumulado_Pagos']],
+            marker_color=colores,
+            textposition='outside'
+        )])
         
-        # Formatear las etiquetas de las barras
-        fig2.for_each_trace(lambda trace: trace.update(text=[formatear_valor(val) for val in trace.y]))
-
+        fig2.update_layout(
+            title='Valor Máximo del Acumulado de Pagos por Mes',
+            xaxis_title='Mes',
+            yaxis_title='Acumulado de Pagos'
+        )
+        
         # Mostrar la segunda gráfica en Streamlit
         st.plotly_chart(fig2)
 
