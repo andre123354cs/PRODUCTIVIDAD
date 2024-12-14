@@ -100,10 +100,13 @@ if cartera_seleccionada:
         meses_nombres = [meses_espanol[mes] for mes in meses]
         
         seleccion_meses = []
-        cols = st.columns(4)
+        cols = st.columns(6)
         for i, mes in enumerate(meses_nombres):
-            if cols[i % 4].button(mes):
-                seleccion_meses.append(mes)
+            if cols[i % 6].button(mes):
+                if mes in seleccion_meses:
+                    seleccion_meses.remove(mes)
+                else:
+                    seleccion_meses.append(mes)
         
         meses_seleccionados_num = [key for key, value in meses_espanol.items() if value in seleccion_meses]
 
