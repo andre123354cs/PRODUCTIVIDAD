@@ -47,7 +47,7 @@ Metas = {
     "keypagos": 100000000,
     "Linea_Directa": 15000000,
     "Nova_Mexico": 1000000,
-    "Nova Colombia": 20000000000,
+    "Nova Colombia": 100000000,
 }
 
 # Diccionario de nombres de meses en español
@@ -92,44 +92,51 @@ if cartera_seleccionada:
         # Filtrar los datos por Cartera_x
         df_filtrado = df[df['Cartera_Pagos'] == cartera_seleccionada]
         
+        # Crear columna acumulada de pagos por día en cada mes
+        df_filtrado['Acumulado_Pagos'] = df_filtrado.groupby(['Mes_Creacion'])['Pagos'].cumsum()
+
         # Filtro para seleccionar los meses a comparar
         meses = df_filtrado['Mes_Creacion'].unique()
         meses_nombres = [meses_espanol[mes] for mes in meses]
-        meses_seleccionados = st.multiselect('Selecciona uno o más meses', meses_nombres, default=meses_nombres[:2])
-        meses_seleccionados_num = [key for key, value in meses_espanol.items() if value in meses_seleccionados]
         
-        # Crear columna acumulada de pagos por día en cada mes
-        df_filtrado['Acumulado_Pagos'] = df_filtrado.groupby(['Mes_Creacion'])['Pagos'].cumsum()
+        seleccion_meses = []
+        cols = st.columns(4)
+        for i, mes in enumerate(meses_nombres):
+            if cols[i % 4].button(mes):
+                seleccion_meses.append(mes)
         
-        # Crear la gráfica de comparación de acumulado de pagos
-        fig = go.Figure()
-        
-        # Agregar líneas para los meses seleccionados
-        for mes in meses_seleccionados_num:
-            df_mes = df_filtrado[df_filtrado['Mes_Creacion'] == mes]
-            fig.add_trace(go.Scatter(x=df_mes['Dia'], y=df_mes['Acumulado_Pagos'], mode='lines+markers', name=f'Acumulado {meses_espanol[mes]}'))
-            # Mostrar la última etiqueta de cada línea
-            fig.add_annotation(x=df_mes['Dia'].iloc[-1], y=df_mes['Acumulado_Pagos'].iloc[-1],
-                               text=formatear_valor(df_mes['Acumulado_Pagos'].iloc[-1]), showarrow=True, arrowhead=2)
-        
-        # Añadir línea discontinua para la meta acumulada diaria hasta 30 días
-        meta = Metas[cartera_seleccionada]
-        dias = np.arange(1, 31)
-        meta_diaria = meta / 30  # Meta diaria
-        meta_acumulada = np.cumsum([meta_diaria] * 30)  # Acumulado de meta diaria
-        
-        fig.add_trace(go.Scatter(x=dias, y=meta_acumulada, mode='lines', name='Meta', line=dict(dash='dash', color='red')))
-        
-        # Añadir título y etiquetas
-        fig.update_layout(
-            title=f'Comparación de Acumulado de Pagos para los Meses Seleccionados',
-            xaxis_title='Día',
-            yaxis_title='Acumulado de Pagos',
-            hovermode='x unified'
-        )
-        
-        # Mostrar la gráfica en Streamlit
-        st.plotly_chart(fig)
+        meses_seleccionados_num = [key for key, value in meses_espanol.items() if value in seleccion_meses]
+
+        if len(meses_seleccionados_num) > 0:
+            # Crear la gráfica de comparación de acumulado de pagos
+            fig = go.Figure()
+            
+            # Agregar líneas para los meses seleccionados
+            for mes in meses_seleccionados_num:
+                df_mes = df_filtrado[df_filtrado['Mes_Creacion'] == mes]
+                fig.add_trace(go.Scatter(x=df_mes['Dia'], y=df_mes['Acumulado_Pagos'], mode='lines+markers', name=f'Acumulado {meses_espanol[mes]}'))
+                # Mostrar la última etiqueta de cada línea
+                fig.add_annotation(x=df_mes['Dia'].iloc[-1], y=df_mes['Acumulado_Pagos'].iloc[-1],
+                                text=formatear_valor(df_mes['Acumulado_Pagos'].iloc[-1]), showarrow=True, arrowhead=2)
+            
+            # Añadir línea discontinua para la meta acumulada diaria hasta 30 días
+            meta = Metas[cartera_seleccionada]
+            dias = np.arange(1, 31)
+            meta_diaria = meta / 30  # Meta diaria
+            meta_acumulada = np.cumsum([meta_diaria] * 30)  # Acumulado de meta diaria
+            
+            fig.add_trace(go.Scatter(x=dias, y=meta_acumulada, mode='lines', name='Meta', line=dict(dash='dash', color='red')))
+            
+            # Añadir título y etiquetas
+            fig.update_layout(
+                title=f'Comparación de Acumulado de Pagos para los Meses Seleccionados',
+                xaxis_title='Día',
+                yaxis_title='Acumulado de Pagos',
+                hovermode='x unified'
+            )
+            
+            # Mostrar la gráfica en Streamlit
+            st.plotly_chart(fig)
         
         # Crear la segunda gráfica con el valor máximo del acumulado por mes
         df_max_acumulado = df_filtrado.groupby('Mes_Creacion')['Acumulado_Pagos'].max().reset_index()
