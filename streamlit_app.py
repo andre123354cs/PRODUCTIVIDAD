@@ -8,7 +8,7 @@ import numpy as np
 import pyrebase
 
 st.set_page_config(
-    page_title="Productiapp",
+    page_title="MetaData",
     page_icon=":chart_with_upwards_trend:",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -16,7 +16,7 @@ st.set_page_config(
 
 # Función para limpiar el caché
 def clear_cache():
-    st.cache_data.clear()
+    st.cache_data.clear()  # Limpiar el caché de los datos
 
 # Botón para ejecutar la limpieza del caché
 if st.button('Actualizar'):
@@ -45,7 +45,7 @@ cartera_seleccionada = st.selectbox('Selecciona la cartera', list(Pagos_Cruzados
 if cartera_seleccionada:
     url = Pagos_Cruzados[cartera_seleccionada]
     try:
-        df = pd.read_csv(url)
+        df = pd.read_parquet(url)
         st.dataframe(df)
     except Exception as e:
         st.error(f"Error al cargar el archivo: {e}")
