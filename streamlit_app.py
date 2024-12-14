@@ -44,5 +44,8 @@ cartera_seleccionada = st.selectbox('Selecciona la cartera', list(Pagos_Cruzados
 # Mostrar la tabla correspondiente a la cartera seleccionada
 if cartera_seleccionada:
     url = Pagos_Cruzados[cartera_seleccionada]
-    df = pd.read_csv(url)
-    st.dataframe(df)
+    try:
+        df = pd.read_csv(url)
+        st.dataframe(df)
+    except Exception as e:
+        st.error(f"Error al cargar el archivo: {e}")
