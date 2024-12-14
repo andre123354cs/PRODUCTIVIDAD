@@ -121,15 +121,13 @@ if cartera_seleccionada:
         df_max_acumulado = df_filtrado.groupby('Mes_Creacion')['Acumulado_Pagos'].max().reset_index()
         df_max_acumulado['Mes'] = df_max_acumulado['Mes_Creacion'].map(meses_espanol)
         
-        fig2 = px.bar(df_max_acumulado, x='Mes', y='Acumulado_Pagos', title='Valor Máximo del Acumulado de Pagos por Mes')
+        fig2 = px.bar(df_max_acumulado, x='Mes', y='Acumulado_Pagos', title='Valor Máximo del Acumulado de Pagos por Mes', text='Acumulado_Pagos')
+        
+        # Añadir etiquetas a las barras con el valor del máximo
+        fig2.update_traces(texttemplate='%{text:.2s}', textposition='outside')
         
         # Mostrar la segunda gráfica en Streamlit
         st.plotly_chart(fig2)
-        
-        # Mostrar el valor máximo del acumulado de pagos
-        max_acumulado = df_filtrado['Acumulado_Pagos'].max()
-        st.metric(label="Máximo Acumulado de Pagos", value=f"${max_acumulado:,.2f}")
-        
+
     except Exception as e:
         st.error(f"Error al cargar el archivo: {e}")
-
