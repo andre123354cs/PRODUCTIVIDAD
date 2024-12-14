@@ -7,7 +7,6 @@ import plotly.graph_objects as go
 import numpy as np
 import pyrebase
 
-
 st.set_page_config(
     page_title="MetaData",
     page_icon=":chart_with_upwards_trend:",
@@ -96,7 +95,7 @@ if cartera_seleccionada:
         df_filtrado['Acumulado_Pagos'] = df_filtrado.groupby(['Mes_Creacion'])['Pagos'].cumsum()
 
         # Filtro para seleccionar los meses a comparar
-        meses = df_filtrado['Mes_Creacion'].unique()
+        meses = sorted(df_filtrado['Mes_Creacion'].unique())
         meses_nombres = [meses_espanol[mes] for mes in meses]
         
         seleccion_meses = []
