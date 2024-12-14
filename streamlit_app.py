@@ -6,6 +6,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
 import pyrebase
+from datetime import datetime
 
 
 st.set_page_config(
@@ -77,6 +78,11 @@ def formatear_valor(valor):
     else:
         return str(valor)
 
+# Obtener el mes actual y el mes anterior
+mes_actual = datetime.now().month
+mes_anterior = mes_actual - 1 if mes_actual > 1 else 12
+meses_predeterminados = [mes_anterior, mes_actual]
+
 # Filtro para seleccionar la cartera
 cartera_seleccionada = st.selectbox('Selecciona la cartera', list(Pagos_Cruzados.keys()))
 
@@ -104,8 +110,9 @@ if cartera_seleccionada:
 
         cols = st.columns(6)
         for i, mes in enumerate(meses_nombres):
-            selected[mes] = cols[i % 6].checkbox(mes, selected[mes])
-            if selected[mes]:
+            if meses_espanol[mes] in [meses_espanol[m] for m in meses_predeterminados]:
+                selected[mes] = True
+            if cols[i % 6].checkbox(mes, selected[mes]):
                 seleccion_meses.append(mes)
         
         meses_seleccionados_num = [key for key, value in meses_espanol.items() if value in seleccion_meses]
