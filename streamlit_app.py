@@ -59,7 +59,6 @@ if cartera_seleccionada:
     try:
         df = pd.read_parquet(url)
 
-        st.dataframe(df)
 
         # Filtrar los datos por Cartera_x
         df_filtrado = df[df['Cartera_Pagos'] == cartera_seleccionada]
