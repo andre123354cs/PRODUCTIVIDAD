@@ -46,7 +46,7 @@ Metas = {
     "keypagos": 100000000,
     "Linea_Directa": 15000000,
     "Nova_Mexico": 1000000,
-    "Nova Colombia": 100000000,
+    "Nova Colombia": 20000000000,
 }
 
 # Diccionario de nombres de meses en español
