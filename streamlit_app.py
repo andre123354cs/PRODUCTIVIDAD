@@ -16,7 +16,7 @@ st.set_page_config(
 
 # Función para limpiar el caché
 def clear_cache():
-    st.cache_data.clear()  # Limpiar el caché de los datos
+    st.cache_data.clear()
 
 # Botón para ejecutar la limpieza del caché
 if st.button('Actualizar'):
@@ -41,11 +41,21 @@ Pagos_Cruzados = {
 # Filtro para seleccionar la cartera
 cartera_seleccionada = st.selectbox('Selecciona la cartera', list(Pagos_Cruzados.keys()))
 
-# Mostrar la tabla correspondiente a la cartera seleccionada
+# Mostrar la tabla correspondiente a la cartera seleccionada y crear acumulado de pagos
 if cartera_seleccionada:
     url = Pagos_Cruzados[cartera_seleccionada]
     try:
         df = pd.read_parquet(url)
-        st.dataframe(df)
+        
+        # Filtrar los datos por Cartera_x
+        df_filtrado = df[df['Cartera_x'] == cartera_seleccionada]
+        
+        # Ordenar los datos por Mes_Creacion y Dia
+        df_filtrado = df_filtrado.sort_values(by=['Mes_Creacion', 'Dia'])
+        
+        # Crear columna acumulada de pagos por día en cada mes
+        df_filtrado['Acumulado_Pagos'] = df_filtrado.groupby(['Mes_Creacion'])['Pagos'].cumsum()
+        
+        st.dataframe(df_filtrado)
     except Exception as e:
         st.error(f"Error al cargar el archivo: {e}")
