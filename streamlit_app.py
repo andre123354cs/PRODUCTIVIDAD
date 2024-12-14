@@ -46,7 +46,7 @@ Metas = {
     "Cueros": 40000000,
     "keypagos": 100000000,
     "Linea_Directa": 49000000,
-    "Nova_Mexico": 100000000,
+    "Nova_Mexico": 1000000,
     "Nova Colombia": 100000000,
 }
 
