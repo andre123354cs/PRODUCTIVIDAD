@@ -25,7 +25,7 @@ if st.button('Actualizar'):
     st.toast(f"✅ ¡Actualización en curso! 🎉")
 
 st.markdown("""
-    <h1 style='text-align: center; color: #ff6347; font-size: 20px;'>Aumenta tu productividad optimizando el recaudo. ¡Alcanza tus metas y maximiza tu eficiencia! 📈</h1>
+    <h1 style='text-align: center; color: #ff6347; font-size: 40px;'>Aumenta tu productividad optimizando el recaudo. ¡Alcanza tus metas y maximiza tu eficiencia! 📈</h1>
     """, unsafe_allow_html=True)
 
 # Diccionario de pagos cruzados
