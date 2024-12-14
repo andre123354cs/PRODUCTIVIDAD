@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 import numpy as np
 import pyrebase
 
+
 st.set_page_config(
     page_title="MetaData",
     page_icon=":chart_with_upwards_trend:",
@@ -46,7 +47,7 @@ Metas = {
     "keypagos": 100000000,
     "Linea_Directa": 15000000,
     "Nova_Mexico": 1000000,
-    "Nova Colombia": 20000000000,
+    "Nova Colombia": 100000000,
 }
 
 # Diccionario de nombres de meses en español
@@ -81,7 +82,8 @@ cartera_seleccionada = st.selectbox('Selecciona la cartera', list(Pagos_Cruzados
 
 @st.cache_data
 def cargar_datos(url):
-    return pd.read_parquet(url)
+    columnas_necesarias = ['Cartera_Pagos', 'Mes_Creacion', 'Dia', 'Pagos']
+    return pd.read_parquet(url, columns=columnas_necesarias)
 
 if cartera_seleccionada:
     url = Pagos_Cruzados[cartera_seleccionada]
@@ -92,10 +94,10 @@ if cartera_seleccionada:
         df_filtrado = df[df['Cartera_Pagos'] == cartera_seleccionada]
         
         # Crear columna acumulada de pagos por día en cada mes
-        df_filtrado['Acumulado_Pagos'] = df_filtrado.groupby(['Mes_Creacion'])['Pagos'].cumsum()
+        df_filtrado['Acumulado_Pagos'] = df_filtrado.groupby(['Mes_Creacion', 'Dia'])['Pagos'].cumsum()
 
         # Filtro para seleccionar los meses a comparar
-        meses = sorted(df_filtrado['Mes_Creacion'].unique())
+        meses = df_filtrado['Mes_Creacion'].unique()
         meses_nombres = [meses_espanol[mes] for mes in meses]
         
         seleccion_meses = []
