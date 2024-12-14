@@ -32,10 +32,10 @@ Pagos_Cruzados = {
     "Comfama": r"https://drive.usercontent.google.com/u/0/uc?id=1u5LH75bdQ5AhJAi67uFfA40EtpANPFNs&export=download",
     "Azzorti": r"https://drive.usercontent.google.com/u/0/uc?id=1R1f6PWmaag4Gm9TGjM_z-EuSz2OEIpQV&export=download",
     "Cueros": r"https://drive.usercontent.google.com/u/0/uc?id=1aBkcFKmqPbJVTZvoUuQGymsUuYWHtyQQ&export=download",
-    "keypagos": r"https://drive.usercontent.google.com/u/0/uc?id=17CSMaLPPY1pOa7_ZykXzvQfhRbPNbGHh&export=download",
+    "keypagos" : r"https://drive.usercontent.google.com/u/0/uc?id=17CSMaLPPY1pOa7_ZykXzvQfhRbPNbGHh&export=download",
     "Linea_Directa": r"https://drive.usercontent.google.com/u/0/uc?id=1ityd0ukmDHOvbZfExIldjucF56L-oJS5&export=download",
     "Nova_Mexico": r"https://drive.usercontent.google.com/u/0/uc?id=17Mv66TRBPDOHqAAh170PjlRenJaDASd6&export=download",
-    "Nova Colombia": r"https://drive.usercontent.google.com/u/0/uc?id=1sSZN5nMI7XTULgiiHFffpr72xMmS712A&export=download"
+    "Nova Colombia": r"https://drive.usercontent.google.com/u/0/uc?id=1sSZN5nMI7XTULgiiHFffpr72xMmS712A&export=download",
 }
 
 # Diccionario de metas
@@ -46,7 +46,7 @@ Metas = {
     "keypagos": 100000000,
     "Linea_Directa": 15000000,
     "Nova_Mexico": 1000000,
-    "Nova Colombia": 100000000
+    "Nova Colombia": 100000000,
 }
 
 # Diccionario de nombres de meses en español
@@ -81,19 +81,18 @@ cartera_seleccionada = st.selectbox('Selecciona la cartera', list(Pagos_Cruzados
 
 @st.cache_data
 def cargar_datos(url):
-    columnas_necesarias = ['Cartera_Pagos', 'Mes_Creacion', 'Dia', 'Pagos']
-    return pd.read_parquet(url, columns=columnas_necesarias)
+    return pd.read_parquet(url)
 
 if cartera_seleccionada:
     url = Pagos_Cruzados[cartera_seleccionada]
     try:
         df = cargar_datos(url)
 
-        # Filtrar los datos por Cartera_Pagos
+        # Filtrar los datos por Cartera_x
         df_filtrado = df[df['Cartera_Pagos'] == cartera_seleccionada]
         
         # Crear columna acumulada de pagos por día en cada mes
-        df_filtrado['Acumulado_Pagos'] = df_filtrado.groupby(['Mes_Creacion', 'Dia'])['Pagos'].cumsum()
+        df_filtrado['Acumulado_Pagos'] = df_filtrado.groupby(['Mes_Creacion'])['Pagos'].cumsum()
 
         # Filtro para seleccionar los meses a comparar
         meses = sorted(df_filtrado['Mes_Creacion'].unique())
