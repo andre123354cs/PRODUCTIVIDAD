@@ -35,7 +35,7 @@ Pagos_Cruzados = {
         "Cueros": r"https://drive.usercontent.google.com/u/0/uc?id=1aBkcFKmqPbJVTZvoUuQGymsUuYWHtyQQ&export=download",
         "keypagos" : r"https://drive.usercontent.google.com/u/0/uc?id=17CSMaLPPY1pOa7_ZykXzvQfhRbPNbGHh&export=download",
         "Linea_Directa": r"https://drive.usercontent.google.com/u/0/uc?id=1ityd0ukmDHOvbZfExIldjucF56L-oJS5&export=download",
-        "Nova Mexico": r"https://drive.usercontent.google.com/u/0/uc?id=17Mv66TRBPDOHqAAh170PjlRenJaDASd6&export=download",
+        "Nova_Mexico": r"https://drive.usercontent.google.com/u/0/uc?id=17Mv66TRBPDOHqAAh170PjlRenJaDASd6&export=download",
         "Nova Colombia": r"https://drive.usercontent.google.com/u/0/uc?id=1sSZN5nMI7XTULgiiHFffpr72xMmS712A&export=download",
 }
 
@@ -46,7 +46,7 @@ Metas = {
     "Cueros": 40000000,
     "keypagos": 100000000,
     "Linea_Directa": 49000000,
-    "Nova Mexico": 100000000,
+    "Nova_Mexico": 100000000,
     "Nova Colombia": 100000000,
 }
 
